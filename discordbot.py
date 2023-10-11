@@ -1,13 +1,11 @@
 '''Discord Bot'''
 
 import os
-from urllib import request
-from wsgiref import headers
 import json
-import discord
-from discord.ext import commands
 import dotenv
 import requests
+import discord
+from discord.ext import commands
 
 dotenv.load_dotenv()
 discord_token = os.environ.get('DISCORD_TOKEN')
@@ -52,7 +50,12 @@ async def check_bookings(ctx):
     }
     response = requests.request(
     "POST", URL, headers=headers, data=payload, timeout=10)
-    print(response.text)
+    data = json.loads(response.text)
+
+    if 'items' in data:
+        await ctx.send("Slots available")
+    else:
+        await ctx.send("No slots")
 
 # Run the bot using your token
 bot.run(discord_token)
