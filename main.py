@@ -9,6 +9,7 @@ from request import restrequest
 
 dotenv.load_dotenv()
 discord_token = os.environ.get('DISCORD_TOKEN')
+channelid = os.environ.get('CHANNEL_ID')
 
 intents = discord.Intents.default()
 
@@ -21,20 +22,38 @@ intents.message_content = True
 async def on_ready():
     '''On Ready'''
     print(f'Logged in as {bot.user.name}')
+    channel = bot.get_channel(int(channelid))
+    await channel.send(await check_bookings('check_bookings'))
 
 # Bot command: A simple command that replies to a specific message
 @bot.command()
-async def hello(ctx):
-    '''Hello'''
-    await ctx.send('Hello, world!')
+async def serverstatus(ctx):
+    '''Check Server Status'''
+    await ctx.send('Server is up')
 
 @bot.command()
 async def check_bookings(ctx):
     '''Check Microsoft Bookings'''
+    print("Logged:",ctx)
     response = restrequest()
     data = json.loads(response.text)
 
-    if 'items' in data:
+    slots = len(data['StaffBookabilities'][0]['BookableTimeBlocks'])
+
+    if slots > 0:
+        return "Slots available"
+    else:
+        return "No slots"
+
+@bot.command()
+async def check_bookings_manual(ctx):
+    '''Check Microsoft Bookings Manually'''
+    response = restrequest()
+    data = json.loads(response.text)
+
+    slots = len(data['StaffBookabilities'][0]['BookableTimeBlocks'])
+
+    if slots > 0:
         await ctx.send("Slots available")
     else:
         await ctx.send("No slots")
