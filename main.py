@@ -2,14 +2,12 @@
 
 import os
 import json
-import datetime
 import sys
 import dotenv
 import discord
 from discord.ext import commands
-import pytz
 from request import restrequest
-
+from processpayload import checkslots
 
 dotenv.load_dotenv()
 discord_token = os.environ.get('DISCORD_TOKEN')
@@ -42,18 +40,7 @@ async def check_bookings(ctx):
     print("Logged:",ctx)
     response = restrequest()
     data = json.loads(response.text)
-
-    appointments = data['StaffBookabilities'][0]['BookableTimeBlocks']
-
-    current_timezone = pytz.timezone("America/Halifax")
-    current_date = datetime.datetime.now(tz=current_timezone).date()
-
-    slots = 0
-    for block in appointments:
-        start_date_str = block["Start"]
-        start_date = datetime.datetime.fromisoformat(start_date_str).astimezone(current_timezone).date()
-        if start_date >= current_date:
-            slots += 1
+    slots = checkslots(data)
 
     if slots > 0:
         return "Slots available"
@@ -65,18 +52,7 @@ async def check_bookings_manual(ctx):
     '''Check Microsoft Bookings Manually'''
     response = restrequest()
     data = json.loads(response.text)
-
-    appointments = data['StaffBookabilities'][0]['BookableTimeBlocks']
-
-    current_timezone = pytz.timezone("America/Halifax")
-    current_date = datetime.datetime.now(tz=current_timezone).date()
-
-    slots = 0
-    for block in appointments:
-        start_date_str = block["Start"]
-        start_date = datetime.datetime.fromisoformat(start_date_str).astimezone(current_timezone).date()
-        if start_date >= current_date:
-            slots += 1
+    slots = checkslots(data)
 
     if slots > 0:
         await ctx.send("Slots available")
