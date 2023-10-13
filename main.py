@@ -45,8 +45,6 @@ async def check_bookings(ctx):
 
     if slots > 0:
         return "Slots available"
-    else:
-        return "No slots"
 
 @bot.command()
 async def check_bookings_manual(ctx):
