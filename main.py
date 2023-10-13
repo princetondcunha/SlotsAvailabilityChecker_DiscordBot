@@ -2,10 +2,12 @@
 
 import os
 import json
+import sys
 import dotenv
 import discord
 from discord.ext import commands
 from request import restrequest
+
 
 dotenv.load_dotenv()
 discord_token = os.environ.get('DISCORD_TOKEN')
@@ -24,6 +26,7 @@ async def on_ready():
     print(f'Logged in as {bot.user.name}')
     channel = bot.get_channel(int(channelid))
     await channel.send(await check_bookings('check_bookings'))
+    sys.exit(0)
 
 # Bot command: A simple command that replies to a specific message
 @bot.command()
