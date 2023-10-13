@@ -4,6 +4,12 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      input-parameter-name:
+        description: 'Description of the input parameter'
+        required: true
+        default: 'Default value'
 
 jobs:
   build:
@@ -23,3 +29,10 @@ jobs:
 
     - name: Run Python script
       run: python main.py
+
+  manual-trigger:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Manual trigger step
+        run: echo "This workflow was manually triggered"
