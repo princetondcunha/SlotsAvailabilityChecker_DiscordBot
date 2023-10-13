@@ -1,6 +1,10 @@
 name: Start Up Discord Bot
 
 on:
+  schedule:
+    - cron: '*/15 * * * *'
+
+on:
   push:
     branches:
       - main
