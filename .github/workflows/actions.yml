@@ -1,6 +1,8 @@
 name: Start Up Discord Bot  
 
 on:
+  schedule:
+    - cron: '*/15 * * * *'
   push:
     branches:
       - main
@@ -10,8 +12,6 @@ on:
         description: 'Description of the input parameter'
         required: true
         default: 'Default value'
-  schedule:
-    - cron: '*/15 * * * *'
 
 jobs:
   build:
