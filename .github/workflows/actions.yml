@@ -29,6 +29,12 @@ jobs:
 
     - name: Run Python script
       run: python main.py
+      env:
+        STAFF_LIST: ${{ secrets.STAFF_LIST }}
+        SERVICEID: ${{ secrets.SERVICEID }}
+        USER_IDENTITY: ${{ secrets.USER_IDENTITY }}
+        DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+        CHANNEL_ID: ${{ secrets.CHANNEL_ID }}
 
   manual-trigger:
     runs-on: ubuntu-latest
