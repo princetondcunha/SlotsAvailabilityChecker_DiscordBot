@@ -44,3 +44,6 @@ jobs:
     steps:
       - name: Manual trigger step
         run: echo "This workflow was manually triggered"
+
+env:
+  TZ: 'Etc/GMT-4'
