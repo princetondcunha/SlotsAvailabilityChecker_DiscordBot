@@ -39,7 +39,7 @@ async def check_bookings(ctx):
     response = restrequest()
     data = json.loads(response.text)
     slots = checkslots(data)
-    #slotstable = printslots(data)
+    slotstable = printslots(data)
 
     if slots > 0:
         return "Slots available\n"
@@ -53,7 +53,7 @@ async def check_bookings_manual(ctx):
     response = restrequest()
     data = json.loads(response.text)
     slots = checkslots(data)
-    #slotstable = printslots(data)
+    slotstable = printslots(data)
 
     if slots > 0:
         await ctx.send("Slots available")
