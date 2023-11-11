@@ -23,7 +23,14 @@ async def on_ready():
     '''On Ready'''
     print(f'Logged in as {bot.user.name}')
     channel = bot.get_channel(int(channelid))
-    await channel.send(await check_bookings('check_bookings'))
+    response_str = await check_bookings('check_bookings')
+    
+    try:
+        await channel.send(response_str)
+    except discord.errors.HTTPException:
+        for chunks in response_str.split("+-----------------------------+")[:-1]:
+            await channel.send(chunks+"+-----------------------------+\n")
+
     print("Logged: Shuting Down")
     sys.exit(0)
 
@@ -42,7 +49,7 @@ async def check_bookings(ctx):
     slotstable = printslots(data)
 
     if slots > 0:
-        return "Slots available\n"
+        return "Slots available\n" + slotstable
     else:
         print("Logged: Shuting Down")
         sys.exit(0)
@@ -56,7 +63,7 @@ async def check_bookings_manual(ctx):
     slotstable = printslots(data)
 
     if slots > 0:
-        await ctx.send("Slots available")
+        await ctx.send("Slots available",slotstable)
     else:
         await ctx.send("No slots")
 
