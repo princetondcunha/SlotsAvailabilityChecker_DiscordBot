@@ -1,8 +1,8 @@
-'''Discord Bot'''
+'''Discord Bot Version.Chronos'''
 
+import asyncio
 import os
 import json
-import sys
 import dotenv
 import discord
 from discord.ext import commands
@@ -23,16 +23,22 @@ async def on_ready():
     '''On Ready'''
     print(f'Logged in as {bot.user.name}')
     channel = bot.get_channel(int(channelid))
-    response_str = await check_bookings('check_bookings')
-    
-    try:
-        await channel.send(response_str)
-    except discord.errors.HTTPException:
-        for chunks in response_str.split("+-----------------------------+")[:-1]:
-            await channel.send(chunks+"+-----------------------------+\n")
 
-    print("Logged: Shuting Down")
-    sys.exit(0)
+    async def background_task():
+        while True:
+            response_str = await check_bookings('check_bookings')
+
+            if response_str is not None:
+                try:
+                    await channel.send(response_str)
+                except discord.errors.HTTPException:
+                    for chunks in response_str.split("+-----------------------------+")[:-1]:
+                        await channel.send(chunks+"+-----------------------------+\n")
+                await asyncio.sleep(900)
+            else:
+                await asyncio.sleep(60)
+
+    bot.loop.create_task(background_task())
 
 @bot.command()
 async def serverstatus(ctx):
@@ -50,9 +56,6 @@ async def check_bookings(ctx):
 
     if slots > 0:
         return "Slots available\n" + slotstable
-    else:
-        print("Logged: Shuting Down")
-        sys.exit(0)
 
 @bot.command()
 async def check_bookings_manual(ctx):
