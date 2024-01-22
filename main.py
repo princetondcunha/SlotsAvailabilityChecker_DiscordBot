@@ -3,11 +3,23 @@
 import asyncio
 import os
 import json
+import sys
+import threading
 import dotenv
 import discord
 from discord.ext import commands
 from request import restrequest
 from processpayload import checkslots, printslots
+
+def timeguard():
+    '''The Timeguard'''
+    print("Shutting down")
+    sys.exit()
+
+timer = threading.Timer(60,timeguard)
+timer.start()
+
+timer.join()
 
 dotenv.load_dotenv()
 discord_token = os.environ.get('DISCORD_TOKEN')
@@ -54,8 +66,17 @@ async def check_bookings(ctx):
     slots = checkslots(data)
     slotstable = printslots(data)
 
-    if slots > 0:
-        return "Slots available\n" + slotstable
+    try:
+        if data != dataprev:
+            dataprev = data
+            if slots > 0:
+                return "Slots available\n" + slotstable
+    except UnboundLocalError:
+        dataprev = data
+        if slots > 0:
+            return "Slots available\n" + slotstable
+
+    dataprev = data
 
 @bot.command()
 async def check_bookings_manual(ctx):
